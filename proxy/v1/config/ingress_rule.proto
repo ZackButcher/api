@@ -18,6 +18,77 @@ import "proxy/v1/config/route_rule.proto";
 
 package istio.proxy.v1.config;
 
+// IngressRule describes a mapping from Authorities served by Gateways to
+// destinations in the mesh, and allow for fine-grained control of traffic
+// as it enters the mesh via RouteRules.
+//
+// Given a Gateway serving HTTPS:
+//
+//     apiVersion: config.istio.io/v1alpha2
+//     metadata:
+//       name: my-ingress
+//     spec:
+//       servers:
+//       - port: 80
+//         protocol: HTTP
+//         authorities:
+//           - uk.bookinfo.com
+//           - eu.bookinfo.com
+//         tls:
+//           httpsRedirect: true # sends 302 redirect for http requests
+//       - port: 443
+//         protocol: HTTP
+//         alpnProtocols: http11, http2
+//         tls:
+//           mode: simple # enables HTTPS on this port
+//         authorities:
+//           - uk.bookinfo.com
+//           - eu.bookinfo.com
+//       certs:
+//       - authorities:
+//           - *.bookinfo.com
+//         serverCert: server.crt
+//         clientCABundle: client.ca-bundle
+//
+// We write the following IngressRule to route traffic from the gateway to the
+// bookinfo service:
+//
+//    metadata:
+//      name: default-ingress
+//    spec:
+//      authorities:
+//      - uk.bookinfo.com
+//      - eu.bookinfo.com
+//      gateways:
+//      - my-ingress
+//      destination:
+//        name: bookinfo
+//
+message IngressRule {
+  // Authorities this Ingress Rule applies to. Each entry must be a hostname
+  // and wildcarding is supported (e.g. *.example.com). The special wildcard
+  // value of "*" stands for the default host.
+  // 
+  // Authorities in this set must match authorities handled by the Gateways
+  // listed in [gateways][istio.proxy.v1.config.IngressRules.gateways].
+  repeated string authorities = 1;
+
+  // Set of Gateways configurations these Ingress rules apply to.
+  repeated string gateways = 2;
+
+  // The default destination for these authorities. When none of the
+  // [rules][istio.proxy.v1.config.IngressRules.rules] below apply this
+  // is the destination selected.
+  IstioService destination = 3;
+
+  // Rules describe exceptions to the normal routing flow. When a request
+  // for one of the authorities in [authorities][istio.proxy.v1.config.IngressRules.authorities]
+  // is handled, we evaluate the `match` conditions in each RouteRule in
+  // this list; if any trigger then the request is handed to the destination
+  // in that rule instead of the default destination for the authority.
+  repeated RouteRule rules = 4;
+}
+
 // Ingress rules are routing rules applied to the ingress proxy pool. The
 // ingress proxes serve as the receiving edge proxy for the entire mesh, but
 // can also be addressed from inside the mesh.  Each ingress rule defines a
@@ -30,7 +101,7 @@ package istio.proxy.v1.config;
 // also effective.
 //
 // WARNING: This API is experimental and under active development
-message IngressRule {
+message K8sIngressRule {
   // REQUIRED: Port on which the ingress proxy listens and applies the rule.
   int32 port = 1;
 
