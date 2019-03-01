@@ -64,6 +64,15 @@ message MeshConfig {
   // always target the same Mixer instance.
   bool sidecar_to_telemetry_session_affinity = 30;
 
+  // Enable Report calls by Gateways as if they're servers, in addition to their usual
+  // usual reporting as a client. This results in two Report calls made at the gateway:
+  // the first, `unknown` into `gateway` and the second (normal) `gateway` into
+  // `service`.
+  // 
+  // This is useful for generating more metrics about the traffic your gateways are
+  // receiving, useful for deployments where the gateway acts as cluster ingress.
+  bool enable_gateway_server_reports = 36;
+
   // Port on which Envoy should listen for incoming connections from
   // other services.
   int32 proxy_listen_port = 4;
@@ -281,7 +290,7 @@ message MeshConfig {
 
 
   // $hide_from_docs
-  // Next available field number: 36
+  // Next available field number: 37
 }
 
 // ConfigSource describes information about a configuration store inside a

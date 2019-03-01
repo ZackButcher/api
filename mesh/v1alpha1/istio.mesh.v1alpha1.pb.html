@@ -321,6 +321,20 @@ always target the same Mixer instance.</p>
 
 </td>
 </tr>
+<tr id="MeshConfig-enable_gateway_server_reports">
+<td><code>enableGatewayServerReports</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Enable Report calls by Gateways as if they&rsquo;re servers, in addition to their usual
+usual reporting as a client. This results in two Report calls made at the gateway:
+the first, <code>unknown</code> into <code>gateway</code> and the second (normal) <code>gateway</code> into
+<code>service</code>.</p>
+
+<p>This is useful for generating more metrics about the traffic your gateways are
+receiving, useful for deployments where the gateway acts as cluster ingress.</p>
+
+</td>
+</tr>
 <tr id="MeshConfig-proxy_listen_port">
 <td><code>proxyListenPort</code></td>
 <td><code>int32</code></td>
