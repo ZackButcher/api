@@ -292,7 +292,7 @@ message MeshConfig {
   google.protobuf.Duration dns_refresh_rate = 36;
 
   // $hide_from_docs
-  // Next available field number: 37
+  // Next available field number: 38
 }
 
 // ConfigSource describes information about a configuration store inside a
