@@ -71,7 +71,7 @@ message MeshConfig {
   // 
   // This is useful for generating more metrics about the traffic your gateways are
   // receiving, useful for deployments where the gateway acts as cluster ingress.
-  bool enable_gateway_server_mixer = 36;
+  bool enable_gateway_server_mixer = 37;
 
   // Port on which Envoy should listen for incoming connections from
   // other services.
